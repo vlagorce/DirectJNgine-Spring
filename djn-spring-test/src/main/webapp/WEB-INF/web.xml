@@ -1,0 +1,63 @@
+<!--
+/*
+ * Copyright © 2008, 2009 Pedro Agulló Soliveres.
+ * 
+ * This file is part of DirectJNgine.
+ *
+ * DirectJNgine is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License.
+ *
+ * DirectJNgine is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with DirectJNgine.  If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * This software uses the ExtJs library (http://extjs.com), which is 
+ * distributed under the GPL v3 license (see http://extjs.com/license).
+ */
+-->
+
+<web-app xmlns="http://java.sun.com/xml/ns/javaee"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_3.xsd"
+   version="2.3">
+	
+	<!-- DirectJNgine-Spring servlet -->
+	
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>
+				classpath:direct-beans-definitions.xml,
+				/WEB-INF/applicationContext.xml
+        </param-value>
+	</context-param>
+	
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+	
+	<servlet>
+		<servlet-name>DjnServlet</servlet-name>
+		<servlet-class>com.extjs.djn.spring.servlet.SpringDirectJNgineServlet</servlet-class>
+		<init-param>
+			<param-name>providersUrl</param-name>
+			<param-value>djn/directprovider</param-value>
+		</init-param>
+		<load-on-startup>2</load-on-startup>
+	</servlet>
+
+  <servlet-mapping>
+    <servlet-name>DjnServlet</servlet-name>
+    <url-pattern>/djn/directprovider/*</url-pattern>
+  </servlet-mapping>
+  
+   <welcome-file-list>
+     <welcome-file>
+       index.html
+     </welcome-file>
+   </welcome-file-list>
+</web-app> 

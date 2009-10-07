@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans default-autowire="byName"
+	xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation=" 
+	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd 
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+	http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+	<context:annotation-config />
+	<context:component-scan base-package="com.extjs.djn.spring" />
+	
+	<bean id="springConfiguration"
+		class="com.extjs.djn.spring.global.impl.SpringGlobalConfiguration">
+		<property name="registryConfigurator">
+			 <bean class="com.softwarementors.extjs.djn.test.config.RegistryConfiguratorForTesting" />
+		</property>
+		<property name="gsonBuilderConfiguratorClass" value="com.softwarementors.extjs.djn.test.config.GsonBuilderConfiguratorForTesting" />
+	</bean>
+
+	<bean id="testActionApiConfiguration"
+		class="com.extjs.djn.spring.test.config.api.test.TestActionApiConfiguration">
+		<property name="apiName" value="DjnTestApi" />
+		<property name="apiNamespace" value="Djn.test" />
+		<property name="apiFileName" value="DjnTestApi.js" />
+		<property name="apiFolder" value="test" />
+	</bean>
+
+	<bean id="nameSpaceTestActionApiConfiguration"
+		class="com.extjs.djn.spring.test.config.api.apinamespace.NameSpaceTestActionApiConfiguration">
+		<property name="apiName" value="DjnNSTestApi" />
+		<property name="apiNamespace" value="Djn.apiNamespace" />
+		<property name="actionsNamespace" value="Djn.actionsNamespace" />
+		<property name="apiFileName" value="DjnTestApi.js" />
+		<property name="apiFolder" value="test" />
+	</bean>
+
+</beans>
