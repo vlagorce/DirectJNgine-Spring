@@ -34,7 +34,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.extjs.djn.spring.action.IDirectAction;
 import com.extjs.djn.spring.action.conf.IActionApiConfiguration;
 import com.extjs.djn.spring.global.ISpringGlobalConfiguration;
-import com.extjs.djn.spring.registry.impl.SpringRegistryConfigurator;
 import com.softwarementors.extjs.djn.api.Registry;
 import com.softwarementors.extjs.djn.config.GlobalConfiguration;
 import com.softwarementors.extjs.djn.gson.GsonBuilderConfigurator;
@@ -80,8 +79,12 @@ public class SpringGlobalConfiguration implements ISpringGlobalConfiguration, In
      * @return
      */
     public GlobalConfiguration createGlobalConfiguration(String providerUrl) {
+	Class<? extends RegistryConfigurator> registryConfiguratorClass = null;
+	if (this.registryConfigurator != null) {
+	    registryConfiguratorClass = registryConfigurator.getClass();
+	}
 
-	return new GlobalConfiguration(providerUrl, debug, gsonBuilderConfiguratorClass, SpringRegistryConfigurator.class, minify,
+	return new GlobalConfiguration(providerUrl, debug, gsonBuilderConfiguratorClass, registryConfiguratorClass, minify,
 		batchRequestsMultithreadingEnabled, batchRequestsMinThreadsPoolSize, batchRequestsMaxThreadsPoolSize,
 		batchRequestsThreadKeepAliveSeconds, batchRequestsMaxThreadsPerRequest);
 
@@ -150,16 +153,9 @@ public class SpringGlobalConfiguration implements ISpringGlobalConfiguration, In
 
     @Override
     public void performCustomRegistryConfiguration(Registry registry, ServletConfig configuration) {
-
-	SpringRegistryConfigurator springRegistryConfigurator = new SpringRegistryConfigurator();
-
-	springRegistryConfigurator.setActionApiConfigurations(actionApiConfigurations);
-
 	if (this.registryConfigurator != null) {
-	    springRegistryConfigurator.setConfigurator(this.registryConfigurator);
+	    registryConfigurator.configure(registry, configuration);
 	}
-
-	springRegistryConfigurator.configure(registry, configuration);
     }
 
     public void setActionApiConfigurations(List<IActionApiConfiguration<IDirectAction>> actionApiConfigurations) {
@@ -227,10 +223,6 @@ public class SpringGlobalConfiguration implements ISpringGlobalConfiguration, In
     }
 
     public void setRegistryConfigurator(RegistryConfigurator registryConfigurator) {
-	this.registryConfigurator = registryConfigurator;
-    }
-
-    public void setRegistryConfigurator(SpringRegistryConfigurator registryConfigurator) {
 	this.registryConfigurator = registryConfigurator;
     }
 

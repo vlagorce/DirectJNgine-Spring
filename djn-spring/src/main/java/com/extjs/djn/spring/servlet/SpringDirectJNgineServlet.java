@@ -29,6 +29,10 @@ import java.util.List;
 
 import javax.servlet.ServletConfig;
 
+import org.springframework.util.CollectionUtils;
+
+import com.extjs.djn.spring.action.IDirectAction;
+import com.extjs.djn.spring.action.conf.IActionApiConfiguration;
 import com.extjs.djn.spring.dispatcher.SpringDispatcher;
 import com.extjs.djn.spring.global.ISpringGlobalConfiguration;
 import com.extjs.djn.spring.global.impl.SpringGlobalConfiguration;
@@ -57,8 +61,14 @@ public class SpringDirectJNgineServlet extends DirectJNgineServlet {
 
     @Override
     protected List<ApiConfiguration> createApiConfigurationsFromServletConfigurationApi(ServletConfig configuration) {
-	// return an empty list DirectJNgine-Spring use the CustomRegistryConfiguration
-	return new ArrayList<ApiConfiguration>(0);
+
+	List<ApiConfiguration> apiConfigurations = new ArrayList<ApiConfiguration>(springGlobalConfiguration.getActionApiConfigurations().size());
+	if (!CollectionUtils.isEmpty(springGlobalConfiguration.getActionApiConfigurations())) {
+	    for (IActionApiConfiguration<IDirectAction> actionApiConfiguration : springGlobalConfiguration.getActionApiConfigurations()) {
+		apiConfigurations.add(actionApiConfiguration.createApiConfiguration(configuration.getServletContext()));
+	    }
+	}
+	return apiConfigurations;
     }
 
     @Override

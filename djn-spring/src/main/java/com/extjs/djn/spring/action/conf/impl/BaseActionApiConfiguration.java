@@ -45,91 +45,99 @@ import com.softwarementors.extjs.djn.config.ApiConfiguration;
  */
 public class BaseActionApiConfiguration<A extends IDirectAction> implements IActionApiConfiguration<A> {
 
-    private String actionsNamespace;
-
-    private ApiConfiguration apiConfiguration;
+    /**
+     *(Optional) ActionNameSpace use for DirectAction defined in this ActionApi
+     */
+    private String actionsNamespace = "";
 
     /**
-     * The file name use for generation js api file (without extension)
+     *(Optional) The file name use for generation js api file.
+     * 
+     * If null he will be generated from apiName
      */
     private String apiFileName;
 
     /**
-     * The folder where the js file should be generated
+     *(Optional) The folder where the js file will be generated
      */
     private String apiFolder;
 
+    /**
+     *(Mandatory) The name of the api
+     */
     private String apiName;
 
-    private String apiNamespace;
+    /**
+     *(Optional) ApiNamespace used for this ActionApi
+     */
+    private String apiNamespace = "";;
 
     /**
-     * The full path of the js api file (with extension)
+     * (Optional)The full path of the js api file (with extension)
+     * 
+     * If null will generated with apiFolder + (apiFileName or apiName)
      */
     private String apiRelativPathFile;
 
+    /**
+     * List of action related to this api-js
+     */
     private List<A> listActions;
 
     public ApiConfiguration createApiConfiguration(ServletContext context) {
-	if (apiConfiguration == null) {
-	    Assert.notNull(apiName, "apiName is mandatory");
+	Assert.notNull(apiName, "apiName is mandatory");
 
-	    if (!StringUtils.hasText(apiRelativPathFile)) {
-		StringBuilder sbRelativPathFile = new StringBuilder();
-		if (StringUtils.hasText(apiFolder)) {
-		    sbRelativPathFile.append(apiFolder);
-		}
-		if (!StringUtils.hasText(apiFileName)) {
-		    StringBuilder fileName = new StringBuilder();
-		    fileName.append("/");
-		    fileName.append(apiName);
-		    fileName.append("-api.js");
-		    apiFileName = fileName.toString();
-		}
-		sbRelativPathFile.append("/" + apiFileName);
-		apiRelativPathFile = sbRelativPathFile.toString();
+	if (!StringUtils.hasText(apiRelativPathFile)) {
+	    StringBuilder sbRelativPathFile = new StringBuilder();
+	    if (StringUtils.hasText(apiFolder)) {
+		sbRelativPathFile.append(apiFolder);
 	    }
-
-	    String apiFullPathFile = context.getRealPath(apiRelativPathFile);
-
-	    List<Class<?>> classes = new ArrayList<Class<?>>(listActions.size());
-	    for (A directAction : getListActions()) {
-		classes.add(directAction.getClass());
+	    if (!StringUtils.hasText(apiFileName)) {
+		StringBuilder fileName = new StringBuilder();
+		fileName.append(apiName);
+		fileName.append("-api.js");
+		apiFileName = fileName.toString();
 	    }
-
-	    apiConfiguration = new ApiConfiguration(getApiName(), apiFullPathFile, getApiNamespace(), getActionsNamespace(), classes);
+	    if (sbRelativPathFile.lastIndexOf("/") != sbRelativPathFile.length()) {
+		sbRelativPathFile.append("/");
+	    }
+	    sbRelativPathFile.append(apiFileName);
+	    apiRelativPathFile = sbRelativPathFile.toString();
 	}
-	return apiConfiguration;
+
+	String apiFullPathFile = context.getRealPath(apiRelativPathFile);
+
+	List<Class<?>> classes = new ArrayList<Class<?>>(listActions.size());
+
+	for (A directAction : getListActions()) {
+	    classes.add(directAction.getClass());
+	}
+
+	return new ApiConfiguration(apiName, apiFullPathFile, apiNamespace, actionsNamespace, classes);
     }
 
     /**
      * @return the actionsNamespace
      */
-    public String getActionsNamespace() {
-	if (actionsNamespace == null) {
-	    actionsNamespace = "";
-	}
+    protected String getActionsNamespace() {
 	return this.actionsNamespace;
     }
 
-    public String getApiFolder() {
+    protected String getApiFolder() {
 	return apiFolder;
     }
 
     /**
      * @return the apiName
      */
-    public String getApiName() {
+    protected String getApiName() {
 	return this.apiName;
     }
 
     /**
      * @return the apiNamespace
      */
-    public String getApiNamespace() {
-	if (apiNamespace == null) {
-	    apiNamespace = "";
-	}
+    protected String getApiNamespace() {
 	return this.apiNamespace;
     }
 
