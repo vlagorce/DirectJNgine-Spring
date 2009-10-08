@@ -37,12 +37,11 @@
 	<context:annotation-config />
 	<context:component-scan base-package="com.extjs.djn.spring" />
 	
-	<bean id="springConfiguration"
-		class="com.extjs.djn.spring.global.impl.SpringGlobalConfiguration">
-		<property name="registryConfigurator">
-			 <bean class="com.softwarementors.extjs.djn.test.config.RegistryConfiguratorForTesting" />
-		</property>
+	<bean id="springConfiguration" class="com.extjs.djn.spring.global.impl.SpringGlobalConfiguration">
 		<property name="gsonBuilderConfiguratorClass" value="com.softwarementors.extjs.djn.test.config.GsonBuilderConfiguratorForTesting" />
+		<property name="registryConfigurator">
+	        <bean class="com.softwarementors.extjs.djn.test.config.RegistryConfiguratorForTesting" />
+		</property>
 	</bean>
 
 	<bean id="testActionApiConfiguration"
