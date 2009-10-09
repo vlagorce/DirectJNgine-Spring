@@ -3,8 +3,10 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.extjs.djn.spring</groupId>
 	<artifactId>djn-spring</artifactId>
+	<name>DirectJNgine-Spring</name>
 	<version>1.1-alpha</version>
 	<packaging>jar</packaging>
+	<url>http://code.google.com/p/directjngine-spring/</url>
 	<build>
 		<plugins>
 			<plugin>
