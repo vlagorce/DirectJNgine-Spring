@@ -1,30 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-/* 
- *   This file is part of DirectJNgine-Spring. Copyright © 2009  vlagorce
- *   
- *   DirectJNgine-Spring is an java Api used to easily configure DirectJNgine with spring.
- *   
- *   DirectJNgine-Spring is free software: you can redistribute it and/or modify
- *   it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation, either version 3 of the License, or
- *   (at your option) any later version.
- *
- *   DirectJNgine-Spring is distributed in the hope that it will be useful,
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *   GNU General Public License for more details.
- *
- *   You should have received a copy of the GNU General Public License
- *   along with DirectJNgine-Spring.  If not, see <http://www.gnu.org/licenses/>.
- *  
- *   DirectJNgine-Spring uses the ExtJs library (http://extjs.com), which is 
- *   distributed under the GPL v3 license (see http://extjs.com/license).
- *   
- *   DirectJNgine-Spring uses the DirectJNgine api (http://code.google.com/p/directjngine/), which is 
- *   distributed under the GPL v3 license.
- */
--->
+	<!--
+		/* * This file is part of DirectJNgine-Spring. Copyright © 2009
+		vlagorce * * DirectJNgine-Spring is an java Api used to easily
+		configure DirectJNgine with spring. * * DirectJNgine-Spring is free
+		software: you can redistribute it and/or modify * it under the terms
+		of the GNU General Public License as published by * the Free Software
+		Foundation, either version 3 of the License, or * (at your option) any
+		later version. * * DirectJNgine-Spring is distributed in the hope that
+		it will be useful, * but WITHOUT ANY WARRANTY; without even the
+		implied warranty of * MERCHANTABILITY or FITNESS FOR A PARTICULAR
+		PURPOSE. See the * GNU General Public License for more details. * *
+		You should have received a copy of the GNU General Public License *
+		along with DirectJNgine-Spring. If not, see
+		<http://www.gnu.org/licenses/>. * * DirectJNgine-Spring uses the ExtJs
+		library (http://extjs.com), which is * distributed under the GPL v3
+		license (see http://extjs.com/license). * * DirectJNgine-Spring uses
+		the DirectJNgine api (http://code.google.com/p/directjngine/), which
+		is * distributed under the GPL v3 license. */
+	-->
 <beans default-autowire="byName"
 	xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:p="http://www.springframework.org/schema/p" xmlns:context="http://www.springframework.org/schema/context"
@@ -36,11 +29,14 @@
 
 	<context:annotation-config />
 	<context:component-scan base-package="com.extjs.djn.spring" />
-	
-	<bean id="springConfiguration" class="com.extjs.djn.spring.global.impl.SpringGlobalConfiguration">
-		<property name="gsonBuilderConfiguratorClass" value="com.softwarementors.extjs.djn.test.config.GsonBuilderConfiguratorForTesting" />
+
+	<bean id="springConfiguration"
+		class="com.extjs.djn.spring.global.impl.SpringGlobalConfiguration">
+		<property name="gsonBuilderConfiguratorClass"
+			value="com.softwarementors.extjs.djn.test.config.GsonBuilderConfiguratorForTesting" />
 		<property name="registryConfigurator">
-	        <bean class="com.softwarementors.extjs.djn.test.config.RegistryConfiguratorForTesting" />
+			<bean
+				class="com.softwarementors.extjs.djn.test.config.RegistryConfiguratorForTesting" />
 		</property>
 	</bean>
 
@@ -50,15 +46,41 @@
 		<property name="apiNamespace" value="Djn.test" />
 		<property name="apiFileName" value="DjnTestApi.js" />
 		<property name="apiFolder" value="test" />
+		<property name="classActionList">
+			<list>
+				<value>com.softwarementors.extjs.djn.test.BatchRequestMultithreadedHandlingTest
+				</value>
+				<value>com.softwarementors.extjs.djn.test.CustomGsonBuilderHandlingTest
+				</value>
+				<value>com.softwarementors.extjs.djn.test.DirectStoreTest</value>
+				<value>com.softwarementors.extjs.djn.test.FormSupportTest</value>
+				<value>com.softwarementors.extjs.djn.test.FormUploadSupportTest
+				</value>
+				<value>com.softwarementors.extjs.djn.test.ManualFormUploadSupportTest
+				</value>
+				<value>com.softwarementors.extjs.djn.test.MethodsInBaseClassCorrectlyScannedTest
+				</value>
+				<value>com.softwarementors.extjs.djn.test.PollTest</value>
+				<value>com.softwarementors.extjs.djn.test.ServerMethodParametersReceptionTest
+				</value>
+				<value>com.softwarementors.extjs.djn.test.ServerMethodReturnTest
+				</value>
+			</list>
+		</property>
 	</bean>
 
 	<bean id="nameSpaceTestActionApiConfiguration"
-		class="com.extjs.djn.spring.test.config.api.apinamespace.NameSpaceTestActionApiConfiguration">
+		class="com.extjs.djn.spring.test.config.api.test.TestActionApiConfiguration">
 		<property name="apiName" value="DjnNSTestApi" />
 		<property name="apiNamespace" value="Djn.apiNamespace" />
 		<property name="actionsNamespace" value="Djn.actionsNamespace" />
 		<property name="apiFileName" value="DjnTestApi.js" />
 		<property name="apiFolder" value="test" />
+		<property name="classActionList">
+			<list>
+				<value>com.softwarementors.extjs.djn.test.NamespaceTest</value>
+			</list>
+		</property>
 	</bean>
 
 </beans>

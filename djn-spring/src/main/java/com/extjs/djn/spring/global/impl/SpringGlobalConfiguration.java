@@ -68,7 +68,6 @@ public class SpringGlobalConfiguration implements ISpringGlobalConfiguration, In
     @Autowired(required = false)
     private RegistryConfigurator registryConfigurator;
 
-    @Override
     public void afterPropertiesSet() throws Exception {
     }
 
@@ -151,7 +150,6 @@ public class SpringGlobalConfiguration implements ISpringGlobalConfiguration, In
 	return minify;
     }
 
-    @Override
     public void performCustomRegistryConfiguration(Registry registry, ServletConfig configuration) {
 	if (this.registryConfigurator != null) {
 	    registryConfigurator.configure(registry, configuration);

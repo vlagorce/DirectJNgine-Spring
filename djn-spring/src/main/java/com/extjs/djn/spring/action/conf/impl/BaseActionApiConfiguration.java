@@ -29,6 +29,7 @@ import java.util.List;
 
 import javax.servlet.ServletContext;
 
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
@@ -43,7 +44,7 @@ import com.softwarementors.extjs.djn.config.ApiConfiguration;
  * 
  * @param <A>
  */
-public class BaseActionApiConfiguration<A extends IDirectAction> implements IActionApiConfiguration<A> {
+public class BaseActionApiConfiguration<A extends IDirectAction> implements IActionApiConfiguration<A>, InitializingBean {
 
     /**
      *(Optional) ActionNameSpace use for DirectAction defined in this ActionApi
@@ -84,6 +85,10 @@ public class BaseActionApiConfiguration<A extends IDirectAction> implements IAct
      */
     private List<A> listActions;
 
+    public void afterPropertiesSet() throws Exception {
+	// Do nothing
+    }
+
     public ApiConfiguration createApiConfiguration(ServletContext context) {
 	Assert.notNull(apiName, "apiName is mandatory");
 
@@ -107,38 +112,7 @@ public class BaseActionApiConfiguration<A extends IDirectAction> implements IAct
 
 	String apiFullPathFile = context.getRealPath(apiRelativPathFile);
 
-	List<Class<?>> classes = new ArrayList<Class<?>>(listActions.size());
-
-	for (A directAction : getListActions()) {
-	    classes.add(directAction.getClass());
-	}
-
-	return new ApiConfiguration(apiName, apiFullPathFile, apiNamespace, actionsNamespace, classes);
-    }
-
-    /**
-     * @return the actionsNamespace
-     */
-    protected String getActionsNamespace() {
-	return this.actionsNamespace;
-    }
-
-    protected String getApiFolder() {
-	return apiFolder;
-    }
-
-    /**
-     * @return the apiName
-     */
-    protected String getApiName() {
-	return this.apiName;
-    }
-
-    /**
-     * @return the apiNamespace
-     */
-    protected String getApiNamespace() {
-	return this.apiNamespace;
+	return new ApiConfiguration(apiName, apiFullPathFile, apiNamespace, actionsNamespace, getListActionClass());
     }
 
     /**
@@ -190,6 +164,41 @@ public class BaseActionApiConfiguration<A extends IDirectAction> implements IAct
      */
     public void setListActions(List<A> listActions) {
 	this.listActions = listActions;
+    }
+
+    /**
+     * @return the actionsNamespace
+     */
+    protected String getActionsNamespace() {
+	return this.actionsNamespace;
+    }
+
+    protected String getApiFolder() {
+	return apiFolder;
+    }
+
+    /**
+     * @return the apiName
+     */
+    protected String getApiName() {
+	return this.apiName;
+    }
+
+    /**
+     * @return the apiNamespace
+     */
+    protected String getApiNamespace() {
+	return this.apiNamespace;
+    }
+
+    protected List<Class<?>> getListActionClass() {
+	List<Class<?>> classes = new ArrayList<Class<?>>(listActions.size());
+
+	for (A directAction : getListActions()) {
+	    classes.add(directAction.getClass());
+	}
+
+	return classes;
     }
 
 }

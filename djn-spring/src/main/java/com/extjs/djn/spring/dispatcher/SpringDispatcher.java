@@ -78,6 +78,7 @@ public class SpringDispatcher extends Dispatcher {
 			action = registeredAction.getActionClass().newInstance();
 		    } catch (Exception e) {
 			LOGGER.error(e);
+			e.printStackTrace();
 		    }
 		}
 		this.mapClassBeanName.put(registeredAction.getActionClass(), action);
