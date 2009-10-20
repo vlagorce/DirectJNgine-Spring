@@ -10,15 +10,24 @@
 
 
 	<context:annotation-config />
-	
+
 	<context:component-scan base-package="com.extjs.djn.spring" />
-	
-	<bean id="testApiConfiguration"
-		class="com.extjs.djn.spring.action.conf.impl.ActionApiConfiguration">
-		<property name="apiName" value="MyExtApiName" />
-		<property name="apiNamespace" value="MyExtApiNamespace" />
+
+	<!-- Autowired api  declaration-->
+	<bean id="autowiredActionApiConfiguration"
+		class="com.extjs.djn.spring.demo.autowired.api.AutowiredActionApiConfiguration">
+		<property name="apiName" value="AutowiredActionApi" />
 		<property name="apiFolder" value="js/directApi" />
 	</bean>
-	
+
+	<!--
+		This action is declared contrary to the FullAutoWiredAction which is
+		scanned
+	-->
+	<bean id="autowiredAction"
+		class="com.extjs.djn.spring.demo.autowired.action.AutowiredAction" />
+
+
+
 
 </beans>
