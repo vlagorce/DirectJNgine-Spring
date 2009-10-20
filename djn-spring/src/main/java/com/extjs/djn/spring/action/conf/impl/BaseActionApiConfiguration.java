@@ -71,7 +71,7 @@ public class BaseActionApiConfiguration<A extends IDirectAction> implements IAct
     /**
      *(Optional) ApiNamespace used for this ActionApi
      */
-    private String apiNamespace = "";;
+    private String apiNamespace;
 
     /**
      * (Optional)The full path of the js api file (with extension)
@@ -108,6 +108,10 @@ public class BaseActionApiConfiguration<A extends IDirectAction> implements IAct
 	    }
 	    sbRelativPathFile.append(apiFileName);
 	    apiRelativPathFile = sbRelativPathFile.toString();
+	}
+
+	if (!StringUtils.hasText(apiNamespace)) {
+	    apiNamespace = apiName;
 	}
 
 	String apiFullPathFile = context.getRealPath(apiRelativPathFile);
