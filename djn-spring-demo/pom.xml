@@ -3,41 +3,43 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.extjs.djn.spring.demo</groupId>
 	<artifactId>djn-spring-demo</artifactId>
-	<version>1.1-alpha</version>
+	<name>DirectJNgine-Spring Test Api</name>
+	<version>1.1-rc1</version>
 	<packaging>war</packaging>
-	<build>
-		<resources>
-			<resource>
-				<directory>src/main/resource</directory>
-			</resource>
-		</resources>
-		<plugins>
-			<plugin>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.0.2</version>
-				<configuration>
-					<encoding>UTF-8</encoding>
-					<source>1.6</source>
-					<target>1.6</target>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
+	<url>http://code.google.com/p/directjngine-spring</url>
 	<dependencies>
 		<dependency>
 			<groupId>com.extjs.djn.spring</groupId>
 			<artifactId>djn-spring</artifactId>
-			<version>1.1-alpha</version>
+			<version>1.1-rc1</version>
 		</dependency>
 		<dependency>
-			<groupId>djn</groupId>
-			<artifactId>djn-demo</artifactId>
-			<version>1.1-alpha</version>
-		</dependency>
-		<dependency>
-			<groupId>djn</groupId>
+			<groupId>com.softwarementors.extjs</groupId>
 			<artifactId>djn-test</artifactId>
-			<version>1.1-alpha</version>
+			<version>1.1</version>
+		</dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.15</version>
+			<exclusions>
+				<exclusion>
+					<groupId>javax.mail</groupId>
+					<artifactId>mail</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>javax.jms</groupId>
+					<artifactId>jms</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.sun.jdmk</groupId>
+					<artifactId>jmxtools</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.sun.jmx</groupId>
+					<artifactId>jmxri</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>
@@ -46,24 +48,9 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-			<version>1.2.14</version>
-		</dependency>
-		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
 			<version>2.5.6</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-web</artifactId>
-			<version>2.5.6</version>
-		</dependency>
-		<dependency>
-			<groupId>org.codehaus.plexus</groupId>
-			<artifactId>plexus-utils</artifactId>
-			<version>1.5.15</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-fileupload</groupId>
@@ -76,4 +63,36 @@
 			<version>1.4</version>
 		</dependency>
 	</dependencies>
+	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resource</directory>
+			</resource>
+		</resources>
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.0.2</version>
+				<configuration>
+					<source>1.5</source>
+					<target>1.5</target>
+					<encoding>UTF-8</encoding>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>2.1</version>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>jar-no-fork</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 </project>
