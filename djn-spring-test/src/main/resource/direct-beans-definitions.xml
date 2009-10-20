@@ -41,7 +41,7 @@
 	</bean>
 
 	<bean id="testActionApiConfiguration"
-		class="com.extjs.djn.spring.test.config.api.test.TestActionApiConfiguration">
+		class="com.extjs.djn.spring.test.TestActionApiConfiguration">
 		<property name="apiName" value="DjnTestApi" />
 		<property name="apiNamespace" value="Djn.test" />
 		<property name="apiFileName" value="DjnTestApi.js" />
@@ -70,7 +70,7 @@
 	</bean>
 
 	<bean id="nameSpaceTestActionApiConfiguration"
-		class="com.extjs.djn.spring.test.config.api.test.TestActionApiConfiguration">
+		class="com.extjs.djn.spring.test.TestActionApiConfiguration">
 		<property name="apiName" value="DjnNSTestApi" />
 		<property name="apiNamespace" value="Djn.apiNamespace" />
 		<property name="actionsNamespace" value="Djn.actionsNamespace" />
