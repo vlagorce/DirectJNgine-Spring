@@ -22,11 +22,13 @@
  *   DirectJNgine-Spring uses the DirectJNgine api (http://code.google.com/p/directjngine/),
  *   which is distributed under the GPL v3 license.
  */
-package com.extjs.djn.spring.test;
+package com.extjs.djn.spring.test.clazz;
 
 import java.util.List;
 
-public class TestActionApiConfiguration extends com.extjs.djn.spring.action.conf.impl.BaseActionApiConfiguration<ITestDirectAction> {
+import com.extjs.djn.spring.action.IDirectAction;
+
+public class TestActionApiConfiguration extends com.extjs.djn.spring.action.conf.impl.BaseActionApiConfiguration<IDirectAction> {
 
     private List<Class<?>> classActionList;
 
