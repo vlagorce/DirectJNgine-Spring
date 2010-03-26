@@ -1,0 +1,23 @@
+
++++ If we want to manage RegistryConfigurator by IOC we are obliged to give the class name in the servlet.
+
++ The Registry can't be managed by IOC. (No real need found actualy) but I think it could simplify to expose it in the servlet
++ The Scanner can't be managed by IOC. (No real need found actualy)
+
+
+++ It could be great to split everything done in createDirectJNgineRouter. This method can't be  overrrided without rewrite all th stuff. For instance no acces to uploader and processor exist.
+
+++ I this way the init(..) method have no real interest. The split a mention before cold be done here by calling multiple method for each part of the initialization. 
+
+++ Allow execution of code before init could be interesting. Addind some pre-treatment.
+  
+    @Override
+    public void init(ServletConfig configuration) throws ServletException {
+	doBeforeInit(configuration);
+	super.init(configuration);
+    }
+
+    protected void doBeforeInit(ServletConfig configuration) throws ServletException {
+    }
+    
+++ In request you give the configuration in every method why don't get the configuration from getServletConfig() . The configuration must only be givent to init(ServletConfig configuration);
