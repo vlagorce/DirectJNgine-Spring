@@ -29,9 +29,10 @@ package com.extjs.djn.spring.servlet;
 import javax.servlet.ServletConfig;
 
 import com.extjs.djn.ioc.servlet.BaseIOCDirectJNgineServlet;
-import com.extjs.djn.spring.global.ISpringGlobalConfigurationManager;
-import com.extjs.djn.spring.global.impl.SpringGlobalConfigurationManager;
+import com.extjs.djn.spring.conf.global.ISpringGlobalConfigurationManager;
+import com.extjs.djn.spring.conf.global.impl.SpringGlobalConfigurationManager;
 import com.extjs.djn.spring.loader.SpringLoaderHelper;
+import com.softwarementors.extjs.djn.router.dispatcher.Dispatcher;
 
 /**
  * DirectJNgine servlet override to used spring object configuration
@@ -54,4 +55,10 @@ public class SpringDirectJNgineServlet extends BaseIOCDirectJNgineServlet {
 	ISpringGlobalConfigurationManager springGlobalConfiguration = (ISpringGlobalConfigurationManager) SpringLoaderHelper.getBeanOfType(SpringGlobalConfigurationManager.class);
 	springGlobalConfiguration.setServletConfig(servletConfig);
     }
+    
+    @Override
+    protected Dispatcher createDispatcher(Class<? extends Dispatcher> cls) {
+        return super.createDispatcher(cls);
+    }
+    
 }

@@ -24,15 +24,15 @@
  * (http://code.google.com/p/directjngine/), which is
  * distributed under the GPL v3 license.
  */
-package com.extjs.djn.spring.dispatcher;
+package com.extjs.djn.ioc.dispatcher;
 
+import java.util.HashMap;
 import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import java.util.Map;
 
 import com.extjs.djn.ioc.conf.action.IDirectAction;
-import com.extjs.djn.ioc.dispatcher.BaseIOCDispatcher;
+import com.softwarementors.extjs.djn.api.RegisteredAction;
+import com.softwarementors.extjs.djn.router.dispatcher.DispatcherBase;
 
 /**
  * Dispatcher used to retrieve DirectAction
@@ -40,15 +40,38 @@ import com.extjs.djn.ioc.dispatcher.BaseIOCDispatcher;
  * @author vlagorce
  * 
  */
-@Component
-public class SpringDispatcher extends BaseIOCDispatcher {
+public class BaseIOCDispatcher extends DispatcherBase {
 
-    public SpringDispatcher() {
+    private Map<Class<?>, Object> mapClassBeanName = null;
+
+    public BaseIOCDispatcher() {
+
     }
 
-    @Autowired(required = false)
-    @Override
+    public BaseIOCDispatcher(List<IDirectAction> directActions) {
+	initDispatcher(directActions);
+    }
+
     public void setActionApiConfigurations(List<IDirectAction> directActions) {
-	super.setActionApiConfigurations(directActions);
+	initDispatcher(directActions);
     }
+
+    protected void initDispatcher(List<IDirectAction> directActions) {
+	if (directActions != null) {
+	    mapClassBeanName = new HashMap<Class<?>, Object>(directActions.size());
+	    for (IDirectAction directAction : directActions) {
+		mapClassBeanName.put(directAction.getClass(), directAction);
+	    }
+	}
+    }
+
+    @Override
+    protected Object getActionInstance(RegisteredAction action) {
+	Object actionInstance = mapClassBeanName.get(action.getActionClass());
+	if (actionInstance == null) {
+	    throw new IllegalArgumentException("No instance found for " + action.getActionClass());
+	}
+	return actionInstance;
+    }
+
 }

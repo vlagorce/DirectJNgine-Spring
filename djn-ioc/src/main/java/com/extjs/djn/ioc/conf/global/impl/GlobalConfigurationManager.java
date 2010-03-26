@@ -24,7 +24,7 @@
  * (http://code.google.com/p/directjngine/), which is
  * distributed under the GPL v3 license.
  */
-package com.extjs.djn.spring.global.impl;
+package com.extjs.djn.ioc.conf.global.impl;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -32,19 +32,15 @@ import java.util.List;
 
 import javax.servlet.ServletConfig;
 
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.CollectionUtils;
-
 import com.extjs.djn.ioc.conf.action.IActionApiConfiguration;
 import com.extjs.djn.ioc.conf.action.IDirectAction;
-import com.extjs.djn.spring.global.ISpringGlobalConfigurationManager;
+import com.extjs.djn.ioc.conf.global.IGlobalConfigurationManager;
+import com.extjs.djn.ioc.dispatcher.BaseIOCDispatcher;
 import com.softwarementors.extjs.djn.api.Registry;
 import com.softwarementors.extjs.djn.config.ApiConfiguration;
 import com.softwarementors.extjs.djn.config.GlobalConfiguration;
 import com.softwarementors.extjs.djn.gson.DefaultGsonBuilderConfigurator;
 import com.softwarementors.extjs.djn.gson.GsonBuilderConfigurator;
-import com.softwarementors.extjs.djn.router.dispatcher.DefaultDispatcher;
 import com.softwarementors.extjs.djn.router.dispatcher.Dispatcher;
 import com.softwarementors.extjs.djn.router.processor.standard.json.DefaultJsonRequestProcessorThread;
 import com.softwarementors.extjs.djn.router.processor.standard.json.JsonRequestProcessorThread;
@@ -57,7 +53,7 @@ import com.softwarementors.extjs.djn.servlet.DirectJNgineServlet.GlobalParameter
  * 
  * @author vlagorce
  */
-public class SpringGlobalConfigurationManager implements ISpringGlobalConfigurationManager, InitializingBean {
+public class GlobalConfigurationManager implements IGlobalConfigurationManager {
 
     private String contextPath = "";
 
@@ -75,34 +71,17 @@ public class SpringGlobalConfigurationManager implements ISpringGlobalConfigurat
 
     private boolean minify = GlobalConfiguration.DEFAULT_MINIFY_VALUE;
 
-    @Autowired(required = false)
     private List<IActionApiConfiguration<IDirectAction>> actionApiConfigurations;
 
-    @Autowired(required = false)
     private GsonBuilderConfigurator gsonBuilderConfigurator;
 
-    @Autowired(required = false)
     private Dispatcher dispatcher;
 
-    @Autowired(required = false)
     private JsonRequestProcessorThread jsonRequestProcessorThread;
 
-    @Autowired(required = false)
     private ServletRegistryConfigurator registryConfigurator;
 
     private GlobalConfiguration globalConfiguration;
-
-    public void afterPropertiesSet() throws Exception {
-	if (gsonBuilderConfigurator == null) {
-	    gsonBuilderConfigurator = new DefaultGsonBuilderConfigurator();
-	}
-	if (dispatcher == null) {
-	    dispatcher = new DefaultDispatcher();
-	}
-	if (jsonRequestProcessorThread == null) {
-	    jsonRequestProcessorThread = new DefaultJsonRequestProcessorThread();
-	}
-    }
 
     private ServletConfig servletConfig;
 
@@ -115,20 +94,18 @@ public class SpringGlobalConfigurationManager implements ISpringGlobalConfigurat
     public GlobalConfiguration getGlobalConfiguration() {
 
 	String providersUrl = ServletUtils.getRequiredParameter(servletConfig, GlobalParameters.PROVIDERS_URL);
-
 	if (globalConfiguration == null) {
-
 	    // FIXME we give the class name but DJN don't need it in IOC mode.
-	    globalConfiguration = new GlobalConfiguration(contextPath, providersUrl, debug, gsonBuilderConfigurator.getClass(), jsonRequestProcessorThread.getClass(), dispatcher
-		    .getClass(), minify, batchRequestsMultithreadingEnabled, batchRequestsMinThreadsPoolSize, batchRequestsMaxThreadsPoolSize, batchRequestsThreadKeepAliveSeconds,
-		    batchRequestsMaxThreadsPerRequest);
+	    globalConfiguration = new GlobalConfiguration(contextPath, providersUrl, debug, getGsonBuilderConfigurator().getClass(), getJsonRequestProcessorThread().getClass(),
+		    getDispatcher().getClass(), minify, batchRequestsMultithreadingEnabled, batchRequestsMinThreadsPoolSize, batchRequestsMaxThreadsPoolSize,
+		    batchRequestsThreadKeepAliveSeconds, batchRequestsMaxThreadsPerRequest);
 	}
 	return globalConfiguration;
     }
 
     public List<ApiConfiguration> getApiConfigurations() {
 	List<ApiConfiguration> apiConfigurations;
-	if (!CollectionUtils.isEmpty(actionApiConfigurations)) {
+	if (actionApiConfigurations != null && actionApiConfigurations.size() > 1) {
 	    apiConfigurations = new ArrayList<ApiConfiguration>(actionApiConfigurations.size());
 	    for (IActionApiConfiguration<IDirectAction> actionApiConfiguration : actionApiConfigurations) {
 		apiConfigurations.add(actionApiConfiguration.createApiConfiguration(servletConfig.getServletContext()));
@@ -140,25 +117,38 @@ public class SpringGlobalConfigurationManager implements ISpringGlobalConfigurat
     }
 
     public void performCustomRegistryConfiguration(Registry registry, ServletConfig configuration) {
-	if (registryConfigurator != null) {
-	    registryConfigurator.configure(registry, configuration);
+	if (getRegistryConfigurator() != null) {
+	    getRegistryConfigurator().configure(registry, configuration);
 	}
     }
 
+    public GsonBuilderConfigurator getGsonBuilderConfigurator() {
+	if (gsonBuilderConfigurator == null) {
+	    gsonBuilderConfigurator = new DefaultGsonBuilderConfigurator();
+	}
+	return gsonBuilderConfigurator;
+    }
+
     public Dispatcher getDispatcher() {
+	if (dispatcher == null) {
+	    dispatcher = new BaseIOCDispatcher();
+	}
 	return dispatcher;
     }
 
-    public void setServletConfig(ServletConfig servletConfig) {
-	this.servletConfig = servletConfig;
-    }
-
     public JsonRequestProcessorThread getJsonRequestProcessorThread() {
+	if (jsonRequestProcessorThread == null) {
+	    jsonRequestProcessorThread = new DefaultJsonRequestProcessorThread();
+	}
 	return jsonRequestProcessorThread;
     }
 
     public ServletRegistryConfigurator getRegistryConfigurator() {
 	return registryConfigurator;
+    }
+
+    public void setServletConfig(ServletConfig servletConfig) {
+	this.servletConfig = servletConfig;
     }
 
     public void setGsonBuilderConfigurator(GsonBuilderConfigurator gsonBuilderConfigurator) {
