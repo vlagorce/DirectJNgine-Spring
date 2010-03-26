@@ -1,40 +1,39 @@
-/* 
- *   This file is part of DirectJNgine-Spring. Copyright © 2009  vlagorce
- *   
- *   DirectJNgine-Spring is an java Api used to easily configure DirectJNgine with spring.
- *   
- *   DirectJNgine-Spring is free software: you can redistribute it and/or modify
- *   it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation, either version 3 of the License, or
- *   (at your option) any later version.
- *
- *   DirectJNgine-Spring is distributed in the hope that it will be useful,
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *   GNU General Public License for more details.
- *
- *   You should have received a copy of the GNU General Public License
- *   along with DirectJNgine-Spring.  If not, see <http://www.gnu.org/licenses/>.
- *  
- *   DirectJNgine-Spring uses the ExtJs library (http://extjs.com), which is 
- *   distributed under the GPL v3 license (see http://extjs.com/license).
- *   
- *   DirectJNgine-Spring uses the DirectJNgine api (http://code.google.com/p/directjngine/), which is 
- *   distributed under the GPL v3 license.
+/*
+ * This file is part of DirectJNgine-Spring. Copyright © 2009 vlagorce
+ * 
+ * DirectJNgine-Spring is an java Api used to easily configure DirectJNgine with
+ * spring.
+ * 
+ * DirectJNgine-Spring is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * DirectJNgine-Spring is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with DirectJNgine-Spring. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * DirectJNgine-Spring uses the ExtJs library (http://extjs.com), which is
+ * distributed under the GPL v3 license (see http://extjs.com/license).
+ * 
+ * DirectJNgine-Spring uses the DirectJNgine api
+ * (http://code.google.com/p/directjngine/), which is
+ * distributed under the GPL v3 license.
  */
-package com.extjs.djn.spring.action.conf.impl;
+package com.extjs.djn.ioc.conf.action.impl;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.ServletContext;
 
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.util.Assert;
-import org.springframework.util.StringUtils;
-
-import com.extjs.djn.spring.action.IDirectAction;
-import com.extjs.djn.spring.action.conf.IActionApiConfiguration;
+import com.extjs.djn.ioc.conf.action.IActionApiConfiguration;
+import com.extjs.djn.ioc.conf.action.IDirectAction;
+import com.softwarementors.extjs.djn.StringUtils;
 import com.softwarementors.extjs.djn.config.ApiConfiguration;
 
 /**
@@ -44,7 +43,7 @@ import com.softwarementors.extjs.djn.config.ApiConfiguration;
  * 
  * @param <A>
  */
-public class BaseActionApiConfiguration<A extends IDirectAction> implements IActionApiConfiguration<A>, InitializingBean {
+public class BaseActionApiConfiguration<A extends IDirectAction> implements IActionApiConfiguration<A> {
 
     /**
      *(Optional) ActionNameSpace use for DirectAction defined in this ActionApi
@@ -85,19 +84,15 @@ public class BaseActionApiConfiguration<A extends IDirectAction> implements IAct
      */
     private List<A> listActions;
 
-    public void afterPropertiesSet() throws Exception {
-	// Do nothing
-    }
-
     public ApiConfiguration createApiConfiguration(ServletContext context) {
-	Assert.notNull(apiName, "apiName is mandatory");
+	assert apiName != null;
 
-	if (!StringUtils.hasText(apiRelativPathFile)) {
+	if (StringUtils.isEmpty(apiRelativPathFile)) {
 	    StringBuilder sbRelativPathFile = new StringBuilder();
-	    if (StringUtils.hasText(apiFolder)) {
+	    if (!StringUtils.isEmpty(apiFolder)) {
 		sbRelativPathFile.append(apiFolder);
 	    }
-	    if (!StringUtils.hasText(apiFileName)) {
+	    if (StringUtils.isEmpty(apiFileName)) {
 		StringBuilder fileName = new StringBuilder();
 		fileName.append(apiName);
 		fileName.append("-api.js");
@@ -110,7 +105,7 @@ public class BaseActionApiConfiguration<A extends IDirectAction> implements IAct
 	    apiRelativPathFile = sbRelativPathFile.toString();
 	}
 
-	if (!StringUtils.hasText(apiNamespace)) {
+	if (StringUtils.isEmpty(apiNamespace)) {
 	    apiNamespace = apiName;
 	}
 

@@ -4,7 +4,7 @@ import java.util.List;
 
 import javax.servlet.ServletConfig;
 
-import com.extjs.djn.ioc.conf.IGlobalConfigurationManager;
+import com.extjs.djn.ioc.conf.global.IGlobalConfigurationManager;
 import com.softwarementors.extjs.djn.api.Registry;
 import com.softwarementors.extjs.djn.config.ApiConfiguration;
 import com.softwarementors.extjs.djn.config.GlobalConfiguration;

@@ -36,9 +36,9 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 
-import com.extjs.djn.ioc.conf.impl.BaseGlogalConfigurationManager;
-import com.extjs.djn.spring.action.IDirectAction;
-import com.extjs.djn.spring.action.conf.IActionApiConfiguration;
+import com.extjs.djn.ioc.conf.action.IActionApiConfiguration;
+import com.extjs.djn.ioc.conf.action.IDirectAction;
+import com.extjs.djn.spring.global.ISpringGlobalConfigurationManager;
 import com.softwarementors.extjs.djn.api.Registry;
 import com.softwarementors.extjs.djn.config.ApiConfiguration;
 import com.softwarementors.extjs.djn.config.GlobalConfiguration;
@@ -57,7 +57,7 @@ import com.softwarementors.extjs.djn.servlet.DirectJNgineServlet.GlobalParameter
  * 
  * @author vlagorce
  */
-public class SpringGlobalConfigurationManager extends BaseGlogalConfigurationManager implements InitializingBean {
+public class SpringGlobalConfigurationManager implements ISpringGlobalConfigurationManager, InitializingBean {
 
     private String contextPath = "";
 
@@ -103,6 +103,7 @@ public class SpringGlobalConfigurationManager extends BaseGlogalConfigurationMan
 	    jsonRequestProcessorThread = new DefaultJsonRequestProcessorThread();
 	}
     }
+
     private ServletConfig servletConfig;
 
     /**

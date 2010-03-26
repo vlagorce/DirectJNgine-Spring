@@ -55,11 +55,9 @@ public class SpringDispatcher extends DispatcherBase {
     @Override
     protected Object getActionInstance(RegisteredAction action) {
 	Object actionInstance = mapClassBeanName.get(action.getActionClass());
-
 	if (actionInstance == null) {
 	    throw new IllegalArgumentException("No instance found for " + action.getActionClass());
 	}
-
 	return actionInstance;
     }
 
