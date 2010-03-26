@@ -26,26 +26,12 @@
  */
 package com.extjs.djn.spring.servlet;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.servlet.ServletConfig;
 
-import org.springframework.util.CollectionUtils;
-
-import com.extjs.djn.spring.action.IDirectAction;
-import com.extjs.djn.spring.action.conf.IActionApiConfiguration;
-import com.extjs.djn.spring.dispatcher.SpringDispatcher;
-import com.extjs.djn.spring.global.ISpringGlobalConfiguration;
-import com.extjs.djn.spring.global.impl.SpringGlobalConfiguration;
+import com.extjs.djn.ioc.servlet.BaseIOCDirectJNgineServlet;
+import com.extjs.djn.spring.global.ISpringGlobalConfigurationManager;
+import com.extjs.djn.spring.global.impl.SpringGlobalConfigurationManager;
 import com.extjs.djn.spring.loader.SpringLoaderHelper;
-import com.softwarementors.extjs.djn.api.Registry;
-import com.softwarementors.extjs.djn.config.ApiConfiguration;
-import com.softwarementors.extjs.djn.config.GlobalConfiguration;
-import com.softwarementors.extjs.djn.router.RequestRouter;
-import com.softwarementors.extjs.djn.servlet.DirectJNgineServlet;
-import com.softwarementors.extjs.djn.servlet.ServletRegistryConfigurator;
-import com.softwarementors.extjs.djn.servlet.ServletUtils;
 
 /**
  * DirectJNgine servlet override to used spring object configuration
@@ -53,52 +39,19 @@ import com.softwarementors.extjs.djn.servlet.ServletUtils;
  * @author vlagorce
  * 
  */
-public class SpringDirectJNgineServlet extends DirectJNgineServlet {
-
-    private static final String PREFIX_SPRING_CONFIG_BEAN_NAME = "direct-spring-config";
+public class SpringDirectJNgineServlet extends BaseIOCDirectJNgineServlet {
 
     /** serialVersionUID */
-    private static final long serialVersionUID = 6872468120152346213L;
-
-    private ISpringGlobalConfiguration springGlobalConfiguration;
+    private static final long serialVersionUID = -4871120248127784841L;
 
     @Override
-    protected List<ApiConfiguration> createApiConfigurationsFromServletConfigurationApi(ServletConfig configuration) {
-
-	List<ApiConfiguration> apiConfigurations = new ArrayList<ApiConfiguration>(springGlobalConfiguration.getActionApiConfigurations().size());
-	if (!CollectionUtils.isEmpty(springGlobalConfiguration.getActionApiConfigurations())) {
-	    for (IActionApiConfiguration<IDirectAction> actionApiConfiguration : springGlobalConfiguration.getActionApiConfigurations()) {
-		apiConfigurations.add(actionApiConfiguration.createApiConfiguration(configuration.getServletContext()));
-	    }
-	}
-	return apiConfigurations;
+    protected void doBeforeServletInit(ServletConfig servletConfig) {
+	super.doBeforeServletInit(servletConfig);
+	loadSpringGlobalConfigurationManager(servletConfig);
     }
 
-    @Override
-    protected GlobalConfiguration createGlobalConfiguration(ServletConfig configuration) {
-
-	ServletUtils.checkRequiredParameters(configuration, GlobalParameters.PROVIDERS_URL);
-	String providersUrl = ServletUtils.getRequiredParameter(configuration, GlobalParameters.PROVIDERS_URL);
-
-	this.springGlobalConfiguration = (SpringGlobalConfiguration) SpringLoaderHelper.getBeanOfType(SpringGlobalConfiguration.class);
-
-	if (springGlobalConfiguration == null) {
-	    springGlobalConfiguration = new SpringGlobalConfiguration();
-	    SpringLoaderHelper.autowireBean(springGlobalConfiguration, PREFIX_SPRING_CONFIG_BEAN_NAME);
-	}
-
-	return springGlobalConfiguration.createGlobalConfiguration(providersUrl);
-    }
-
-    @Override
-    protected RequestRouter createRequestRouter(Registry registry, GlobalConfiguration globalConfiguration) {
-	return new RequestRouter(registry, globalConfiguration, new SpringDispatcher(registry));
-    }
-
-    @Override
-    protected void performCustomRegistryConfiguration(Class<? extends ServletRegistryConfigurator> configuratorClass, Registry registry, ServletConfig configuration) {
-	//FIXME never call if you don't give any class name in the servlet (event if we'll not use it)..
-	springGlobalConfiguration.performCustomRegistryConfiguration(registry, configuration);
-
+    protected void loadSpringGlobalConfigurationManager(ServletConfig servletConfig) {
+	ISpringGlobalConfigurationManager springGlobalConfiguration = (ISpringGlobalConfigurationManager) SpringLoaderHelper.getBeanOfType(SpringGlobalConfigurationManager.class);
+	springGlobalConfiguration.setServletConfig(servletConfig);
     }
 }

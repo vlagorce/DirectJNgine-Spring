@@ -54,29 +54,30 @@ public class SpringDispatcher extends DispatcherBase {
 
     @Override
     protected Object getActionInstance(RegisteredAction action) {
-	Object actionInstance = this.mapClassBeanName.get(action.getActionClass());
+	Object actionInstance = mapClassBeanName.get(action.getActionClass());
 
 	if (actionInstance == null) {
-	    throw new IllegalArgumentException("No instanceClass found for " + action.getActionClass());
+	    throw new IllegalArgumentException("No instance found for " + action.getActionClass());
 	}
 
 	return actionInstance;
     }
 
     protected void initDispatcher(Registry registry) {
-	this.mapClassBeanName = new HashMap<Class<?>, Object>();
+	mapClassBeanName = new HashMap<Class<?>, Object>();
 	for (RegisteredApi api : registry.getApis()) {
 	    for (RegisteredAction registeredAction : api.getActions()) {
 		Object action = SpringLoaderHelper.getBeanOfType(registeredAction.getActionClass());
 		if (action == null) {
 		    try {
 			action = registeredAction.getActionClass().newInstance();
-		    } catch (Exception e) {
-			LOGGER.error(e);
-			e.printStackTrace();
+		    } catch (InstantiationException e) {
+			throw new IllegalStateException(e);
+		    } catch (IllegalAccessException e) {
+			throw new IllegalStateException(e);
 		    }
 		}
-		this.mapClassBeanName.put(registeredAction.getActionClass(), action);
+		mapClassBeanName.put(registeredAction.getActionClass(), action);
 		if (LOGGER.isDebugEnabled()) {
 		    LOGGER.debug("Add " + action.getClass() + " in dispatcher.");
 		}

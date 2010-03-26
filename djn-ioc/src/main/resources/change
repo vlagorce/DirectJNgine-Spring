@@ -1,0 +1,15 @@
+
+In DirectJNgineServlet
+
+need : mandatory
+issue : If I want to use custom registry with IOC I need to give a valid class name to the servlet config.
+reason : if condition line 150
+change : moving all custom registry thing in one method
+         protected void performCustomRegistryConfiguration(Registry registry)
+         I don't give configuration as parameter because I can have it by using getServletConfig
+
+need : nice to have
+issue : I can access the servlet config before the HttpServlet initialization and before the begining of the router initialization.
+reason : init implementation
+change : add method
+		 void doBeforeServletInit(ServletConfig configuration);

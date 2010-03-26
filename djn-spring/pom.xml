@@ -10,9 +10,9 @@
 	<url>http://code.google.com/p/directjngine-spring</url>
 	<dependencies>
 		<dependency>
-			<groupId>com.softwarementors.extjs</groupId>
-			<artifactId>djn</artifactId>
-			<version>1.2</version>
+			<groupId>com.extjs.djn.spring</groupId>
+			<artifactId>djn-ioc</artifactId>
+			<version>1.2-rc1</version>
 		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>

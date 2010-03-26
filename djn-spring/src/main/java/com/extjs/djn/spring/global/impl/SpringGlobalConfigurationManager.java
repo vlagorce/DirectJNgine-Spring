@@ -26,36 +26,44 @@
  */
 package com.extjs.djn.spring.global.impl;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.servlet.ServletConfig;
 
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 
+import com.extjs.djn.ioc.conf.impl.BaseGlogalConfigurationManager;
 import com.extjs.djn.spring.action.IDirectAction;
 import com.extjs.djn.spring.action.conf.IActionApiConfiguration;
-import com.extjs.djn.spring.global.ISpringGlobalConfiguration;
 import com.softwarementors.extjs.djn.api.Registry;
+import com.softwarementors.extjs.djn.config.ApiConfiguration;
 import com.softwarementors.extjs.djn.config.GlobalConfiguration;
+import com.softwarementors.extjs.djn.gson.DefaultGsonBuilderConfigurator;
 import com.softwarementors.extjs.djn.gson.GsonBuilderConfigurator;
+import com.softwarementors.extjs.djn.router.dispatcher.DefaultDispatcher;
 import com.softwarementors.extjs.djn.router.dispatcher.Dispatcher;
+import com.softwarementors.extjs.djn.router.processor.standard.json.DefaultJsonRequestProcessorThread;
 import com.softwarementors.extjs.djn.router.processor.standard.json.JsonRequestProcessorThread;
 import com.softwarementors.extjs.djn.servlet.ServletRegistryConfigurator;
+import com.softwarementors.extjs.djn.servlet.ServletUtils;
+import com.softwarementors.extjs.djn.servlet.DirectJNgineServlet.GlobalParameters;
 
 /**
  * Spring Configuration container
  * 
  * @author vlagorce
  */
-public class SpringGlobalConfiguration implements ISpringGlobalConfiguration, InitializingBean {
+public class SpringGlobalConfigurationManager extends BaseGlogalConfigurationManager implements InitializingBean {
 
-    @Autowired(required = false)
-    private List<IActionApiConfiguration<IDirectAction>> actionApiConfigurations;
+    private String contextPath = "";
 
     private int batchRequestsMaxThreadsPerRequest = GlobalConfiguration.DEFAULT_BATCH_REQUESTS_MAX_THREADS_PER_REQUEST;
 
-    private int batchRequestsMaxThreadsPoolSize = GlobalConfiguration.DEFAULT_BATCH_REQUESTS_MIN_THREAD_POOL_SIZE;
+    private int batchRequestsMaxThreadsPoolSize = GlobalConfiguration.DEFAULT_BATCH_REQUESTS_MAX_THREAD_POOL_SIZE;
 
     private int batchRequestsMinThreadsPoolSize = GlobalConfiguration.DEFAULT_BATCH_REQUESTS_MIN_THREAD_POOL_SIZE;
 
@@ -65,15 +73,37 @@ public class SpringGlobalConfiguration implements ISpringGlobalConfiguration, In
 
     private boolean debug = false;
 
-    private Class<? extends GsonBuilderConfigurator> gsonBuilderConfiguratorClass = GlobalConfiguration.DEFAULT_GSON_BUILDER_CONFIGURATOR_CLASS;
-
     private boolean minify = GlobalConfiguration.DEFAULT_MINIFY_VALUE;
+
+    @Autowired(required = false)
+    private List<IActionApiConfiguration<IDirectAction>> actionApiConfigurations;
+
+    @Autowired(required = false)
+    private GsonBuilderConfigurator gsonBuilderConfigurator;
+
+    @Autowired(required = false)
+    private Dispatcher dispatcher;
+
+    @Autowired(required = false)
+    private JsonRequestProcessorThread jsonRequestProcessorThread;
 
     @Autowired(required = false)
     private ServletRegistryConfigurator registryConfigurator;
 
+    private GlobalConfiguration globalConfiguration;
+
     public void afterPropertiesSet() throws Exception {
+	if (gsonBuilderConfigurator == null) {
+	    gsonBuilderConfigurator = new DefaultGsonBuilderConfigurator();
+	}
+	if (dispatcher == null) {
+	    dispatcher = new DefaultDispatcher();
+	}
+	if (jsonRequestProcessorThread == null) {
+	    jsonRequestProcessorThread = new DefaultJsonRequestProcessorThread();
+	}
     }
+    private ServletConfig servletConfig;
 
     /**
      * return the globalConfiguration using by DirectJNgine api
@@ -81,145 +111,103 @@ public class SpringGlobalConfiguration implements ISpringGlobalConfiguration, In
      * @param providerUrl
      * @return
      */
-    public GlobalConfiguration createGlobalConfiguration(String providersUrl) {
+    public GlobalConfiguration getGlobalConfiguration() {
 
-	String contextPath = null;
-	Class<? extends GsonBuilderConfigurator> gsonBuilderConfiguratorClass = null;
-	Class<? extends JsonRequestProcessorThread> jsonRequestProcessorThreadClass = null;
-	Class<? extends Dispatcher> dispatcherClass = null;
+	String providersUrl = ServletUtils.getRequiredParameter(servletConfig, GlobalParameters.PROVIDERS_URL);
 
-	return new GlobalConfiguration(contextPath, providersUrl, debug, gsonBuilderConfiguratorClass, jsonRequestProcessorThreadClass, dispatcherClass, minify,
-		batchRequestsMultithreadingEnabled, batchRequestsMinThreadsPoolSize, batchRequestsMaxThreadsPoolSize, batchRequestsThreadKeepAliveSeconds,
-		batchRequestsMaxThreadsPerRequest);
+	if (globalConfiguration == null) {
+
+	    // FIXME we give the class name but DJN don't need it in IOC mode.
+	    globalConfiguration = new GlobalConfiguration(contextPath, providersUrl, debug, gsonBuilderConfigurator.getClass(), jsonRequestProcessorThread.getClass(), dispatcher
+		    .getClass(), minify, batchRequestsMultithreadingEnabled, batchRequestsMinThreadsPoolSize, batchRequestsMaxThreadsPoolSize, batchRequestsThreadKeepAliveSeconds,
+		    batchRequestsMaxThreadsPerRequest);
+	}
+	return globalConfiguration;
     }
 
-    public List<IActionApiConfiguration<IDirectAction>> getActionApiConfigurations() {
-	return actionApiConfigurations;
+    public List<ApiConfiguration> getApiConfigurations() {
+	List<ApiConfiguration> apiConfigurations;
+	if (!CollectionUtils.isEmpty(actionApiConfigurations)) {
+	    apiConfigurations = new ArrayList<ApiConfiguration>(actionApiConfigurations.size());
+	    for (IActionApiConfiguration<IDirectAction> actionApiConfiguration : actionApiConfigurations) {
+		apiConfigurations.add(actionApiConfiguration.createApiConfiguration(servletConfig.getServletContext()));
+	    }
+	} else {
+	    apiConfigurations = Collections.emptyList();
+	}
+	return apiConfigurations;
     }
 
-    /**
-     * @return the batchRequestsMaxThreadsPerRequest
-     */
-    public int getBatchRequestsMaxThreadsPerRequest() {
-	return batchRequestsMaxThreadsPerRequest;
+    public void performCustomRegistryConfiguration(Registry registry, ServletConfig configuration) {
+	if (registryConfigurator != null) {
+	    registryConfigurator.configure(registry, configuration);
+	}
     }
 
-    /**
-     * @return the batchRequestsMaxThreadsPoolSize
-     */
-    public int getBatchRequestsMaxThreadsPoolSize() {
-	return batchRequestsMaxThreadsPoolSize;
+    public Dispatcher getDispatcher() {
+	return dispatcher;
     }
 
-    /**
-     * @return the batchRequestsMinThreadsPoolSize
-     */
-    public int getBatchRequestsMinThreadsPoolSize() {
-	return batchRequestsMinThreadsPoolSize;
+    public void setServletConfig(ServletConfig servletConfig) {
+	this.servletConfig = servletConfig;
     }
 
-    /**
-     * @return the batchRequestsThreadKeepAliveSeconds
-     */
-    public int getBatchRequestsThreadKeepAliveSeconds() {
-	return batchRequestsThreadKeepAliveSeconds;
-    }
-
-    public Class<? extends GsonBuilderConfigurator> getGsonBuilderConfiguratorClass() {
-	return gsonBuilderConfiguratorClass;
+    public JsonRequestProcessorThread getJsonRequestProcessorThread() {
+	return jsonRequestProcessorThread;
     }
 
     public ServletRegistryConfigurator getRegistryConfigurator() {
 	return registryConfigurator;
     }
 
-    /**
-     * @return the batchRequestsMultithreadingEnabled
-     */
-    public boolean isBatchRequestsMultithreadingEnabled() {
-	return batchRequestsMultithreadingEnabled;
+    public void setGsonBuilderConfigurator(GsonBuilderConfigurator gsonBuilderConfigurator) {
+	this.gsonBuilderConfigurator = gsonBuilderConfigurator;
     }
 
-    /**
-     * @return the debug
-     */
-    public boolean isDebug() {
-	return debug;
+    public void setDispatcher(Dispatcher dispatcher) {
+	this.dispatcher = dispatcher;
     }
 
-    /**
-     * @return the minify
-     */
-    public boolean isMinify() {
-	return minify;
+    public void setJsonRequestProcessorThread(JsonRequestProcessorThread jsonRequestProcessorThread) {
+	this.jsonRequestProcessorThread = jsonRequestProcessorThread;
     }
 
-    public void performCustomRegistryConfiguration(Registry registry, ServletConfig configuration) {
-	if (this.registryConfigurator != null) {
-	    registryConfigurator.configure(registry, configuration);
-	}
+    public void setContextPath(String contextPath) {
+	this.contextPath = contextPath;
+    }
+
+    public void setRegistryConfigurator(ServletRegistryConfigurator registryConfigurator) {
+	this.registryConfigurator = registryConfigurator;
     }
 
     public void setActionApiConfigurations(List<IActionApiConfiguration<IDirectAction>> actionApiConfigurations) {
 	this.actionApiConfigurations = actionApiConfigurations;
     }
 
-    /**
-     * @param batchRequestsMaxThreadsPerRequest
-     *            the batchRequestsMaxThreadsPerRequest to set
-     */
     public void setBatchRequestsMaxThreadsPerRequest(int batchRequestsMaxThreadsPerRequest) {
 	this.batchRequestsMaxThreadsPerRequest = batchRequestsMaxThreadsPerRequest;
     }
 
-    /**
-     * @param batchRequestsMaxThreadsPoolSize
-     *            the batchRequestsMaxThreadsPoolSize to set
-     */
     public void setBatchRequestsMaxThreadsPoolSize(int batchRequestsMaxThreadsPoolSize) {
 	this.batchRequestsMaxThreadsPoolSize = batchRequestsMaxThreadsPoolSize;
     }
 
-    /**
-     * @param batchRequestsMinThreadsPoolSizel
-     *            the batchRequestsMinThreadsPoolSize to set
-     */
     public void setBatchRequestsMinThreadsPoolSize(int batchRequestsMinThreadsPoolSize) {
 	this.batchRequestsMinThreadsPoolSize = batchRequestsMinThreadsPoolSize;
     }
 
-    /**
-     * @param batchRequestsMultithreadingEnabled
-     *            the batchRequestsMultithreadingEnabled to set
-     */
     public void setBatchRequestsMultithreadingEnabled(boolean batchRequestsMultithreadingEnabled) {
 	this.batchRequestsMultithreadingEnabled = batchRequestsMultithreadingEnabled;
     }
 
-    /**
-     * @param batchRequestsThreadKeepAliveSeconds
-     *            the batchRequestsThreadKeepAliveSeconds to set
-     */
     public void setBatchRequestsThreadKeepAliveSeconds(int batchRequestsThreadKeepAliveSeconds) {
 	this.batchRequestsThreadKeepAliveSeconds = batchRequestsThreadKeepAliveSeconds;
     }
 
-    /**
-     * @param debug
-     *            the debug to set
-     */
     public void setDebug(boolean debug) {
 	this.debug = debug;
     }
 
-    public void setGsonBuilderConfiguratorClass(Class<? extends GsonBuilderConfigurator> gsonBuilderConfiguratorClass) {
-	this.gsonBuilderConfiguratorClass = gsonBuilderConfiguratorClass;
-    }
-
-    /**
-     * @param minify
-     *            the minify to set
-     */
     public void setMinify(boolean minify) {
 	this.minify = minify;
     }
@@ -227,5 +215,4 @@ public class SpringGlobalConfiguration implements ISpringGlobalConfiguration, In
     public void setServletRegistryConfigurator(ServletRegistryConfigurator registryConfigurator) {
 	this.registryConfigurator = registryConfigurator;
     }
-
 }
