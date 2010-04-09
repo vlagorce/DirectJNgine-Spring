@@ -4,63 +4,35 @@
 	<groupId>com.extjs.djn.spring</groupId>
 	<artifactId>djn-spring-test</artifactId>
 	<name>DirectJNgine-Spring Test Api</name>
-	<version>1.1-rc1</version>
+	<version>1.2-rc1</version>
 	<packaging>war</packaging>
 	<url>http://code.google.com/p/directjngine-spring</url>
-	<dependencies>
+		<dependencies>
+		<!-- Scope compile	djn	-->
 		<dependency>
 			<groupId>com.extjs.djn.spring</groupId>
 			<artifactId>djn-spring</artifactId>
-			<version>1.1-rc1</version>
+			<version>${pom.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.softwarementors.extjs</groupId>
 			<artifactId>djn-test</artifactId>
-			<version>1.1</version>
+			<version>1.2</version>
 		</dependency>
-		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-			<version>1.2.15</version>
-			<exclusions>
-				<exclusion>
-					<groupId>javax.mail</groupId>
-					<artifactId>mail</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>javax.jms</groupId>
-					<artifactId>jms</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>com.sun.jdmk</groupId>
-					<artifactId>jmxtools</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>com.sun.jmx</groupId>
-					<artifactId>jmxri</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
+		<!-- Scope compile third party	-->
+		<!-- Scope provided		-->
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
 			<version>2.5</version>
 			<scope>provided</scope>
 		</dependency>
+		<!-- scope test		-->
 		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-context</artifactId>
-			<version>2.5.6</version>
-		</dependency>
-		<dependency>
-			<groupId>commons-fileupload</groupId>
-			<artifactId>commons-fileupload</artifactId>
-			<version>1.2.1</version>
-		</dependency>
-		<dependency>
-			<groupId>commons-io</groupId>
-			<artifactId>commons-io</artifactId>
-			<version>1.4</version>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.8.1</version>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 	<build>
@@ -74,8 +46,8 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>2.0.2</version>
 				<configuration>
-					<source>1.5</source>
-					<target>1.5</target>
+					<source>1.6</source>
+					<target>1.6</target>
 					<encoding>UTF-8</encoding>
 				</configuration>
 			</plugin>

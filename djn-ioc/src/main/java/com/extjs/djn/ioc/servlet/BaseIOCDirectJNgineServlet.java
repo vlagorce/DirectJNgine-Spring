@@ -12,29 +12,22 @@ import com.softwarementors.extjs.djn.router.dispatcher.Dispatcher;
 
 public abstract class BaseIOCDirectJNgineServlet extends BaseDirectJNgineServlet {
 
-    private IGlobalConfigurationManager configurationManager;
+    public abstract IGlobalConfigurationManager getConfigurationManager();
 
-    public void setConfigurationManager(IGlobalConfigurationManager configurationManager) {
-	this.configurationManager = configurationManager;
-    }
-
-    @Override
     protected GlobalConfiguration createGlobalConfiguration(ServletConfig configuration) {
-	return configurationManager.getGlobalConfiguration();
+	return getConfigurationManager().getGlobalConfiguration();
     }
 
     protected Dispatcher createDispatcher(Class<? extends Dispatcher> cls) {
-	return configurationManager.getDispatcher();
+	return getConfigurationManager().getDispatcher();
     }
 
-    @Override
     protected List<ApiConfiguration> createApiConfigurationsFromServletConfigurationApi(ServletConfig configuration) {
-	return configurationManager.getApiConfigurations();
+	return getConfigurationManager().getApiConfigurations();
     }
 
-    @Override
     protected void performCustomRegistryConfiguration(Registry registry) {
-	configurationManager.performCustomRegistryConfiguration(registry, getServletConfig());
+	getConfigurationManager().performCustomRegistryConfiguration(registry, getServletConfig());
     }
 
 }

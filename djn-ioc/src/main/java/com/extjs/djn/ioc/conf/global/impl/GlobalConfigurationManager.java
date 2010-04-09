@@ -105,7 +105,7 @@ public class GlobalConfigurationManager implements IGlobalConfigurationManager {
 
     public List<ApiConfiguration> getApiConfigurations() {
 	List<ApiConfiguration> apiConfigurations;
-	if (actionApiConfigurations != null && actionApiConfigurations.size() > 1) {
+	if (actionApiConfigurations != null && actionApiConfigurations.size() > 0) {
 	    apiConfigurations = new ArrayList<ApiConfiguration>(actionApiConfigurations.size());
 	    for (IActionApiConfiguration<IDirectAction> actionApiConfiguration : actionApiConfigurations) {
 		apiConfigurations.add(actionApiConfiguration.createApiConfiguration(servletConfig.getServletContext()));

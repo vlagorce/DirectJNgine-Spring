@@ -27,12 +27,13 @@
 package com.extjs.djn.spring.servlet;
 
 import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
 
+import com.extjs.djn.ioc.conf.global.IGlobalConfigurationManager;
 import com.extjs.djn.ioc.servlet.BaseIOCDirectJNgineServlet;
 import com.extjs.djn.spring.conf.global.ISpringGlobalConfigurationManager;
 import com.extjs.djn.spring.conf.global.impl.SpringGlobalConfigurationManager;
 import com.extjs.djn.spring.loader.SpringLoaderHelper;
-import com.softwarementors.extjs.djn.router.dispatcher.Dispatcher;
 
 /**
  * DirectJNgine servlet override to used spring object configuration
@@ -45,20 +46,22 @@ public class SpringDirectJNgineServlet extends BaseIOCDirectJNgineServlet {
     /** serialVersionUID */
     private static final long serialVersionUID = -4871120248127784841L;
 
+    private ISpringGlobalConfigurationManager springGlobalConfigurationManager;
+
     @Override
-    protected void doBeforeServletInit(ServletConfig servletConfig) {
-	super.doBeforeServletInit(servletConfig);
+    public void init(ServletConfig servletConfig) throws ServletException {
 	loadSpringGlobalConfigurationManager(servletConfig);
+	super.init(servletConfig);
     }
 
     protected void loadSpringGlobalConfigurationManager(ServletConfig servletConfig) {
-	ISpringGlobalConfigurationManager springGlobalConfiguration = (ISpringGlobalConfigurationManager) SpringLoaderHelper.getBeanOfType(SpringGlobalConfigurationManager.class);
-	springGlobalConfiguration.setServletConfig(servletConfig);
+	springGlobalConfigurationManager = (ISpringGlobalConfigurationManager) SpringLoaderHelper.getBeanOfType(SpringGlobalConfigurationManager.class);
+	springGlobalConfigurationManager.setServletConfig(servletConfig);
     }
-    
+
     @Override
-    protected Dispatcher createDispatcher(Class<? extends Dispatcher> cls) {
-        return super.createDispatcher(cls);
+    public IGlobalConfigurationManager getConfigurationManager() {
+	return springGlobalConfigurationManager;
     }
-    
+
 }

@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.extjs.djn.spring.action.conf.impl.BaseActionApiConfiguration;
+import com.extjs.djn.ioc.conf.action.impl.BaseActionApiConfiguration;
 import com.extjs.djn.spring.demo.autowired.IAutoWiredDirectAction;
 
 public class AutowiredActionApiConfiguration extends BaseActionApiConfiguration<IAutoWiredDirectAction> {

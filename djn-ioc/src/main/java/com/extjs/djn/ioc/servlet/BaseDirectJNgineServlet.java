@@ -123,10 +123,6 @@ public class BaseDirectJNgineServlet extends HttpServlet {
 	timer.logDebugTimeInMilliseconds("Djn initialization: total DirectJNgine initialization time");
     }
 
-    protected void doBeforeServletInit(ServletConfig configuration) {
-	
-    }
-    
     protected void createDirectJNgineRouter(ServletConfig configuration) throws ServletException {
 	assert configuration != null;
 
