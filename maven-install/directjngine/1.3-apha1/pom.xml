@@ -4,7 +4,7 @@
 	<groupId>com.softwarementors.extjs</groupId>
 	<artifactId>djn</artifactId>
 	<name>DirectJNgine Api</name>
-	<version>1.3.aplha1</version>
+	<version>1.3-aplha1</version>
 	<packaging>jar</packaging>
 	<dependencies>
 		<dependency>

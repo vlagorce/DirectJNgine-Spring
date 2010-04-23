@@ -13,7 +13,7 @@
 		<dependency>
 			<groupId>com.softwarementors.extjs</groupId>
 			<artifactId>djn</artifactId>
-			<version>1.2</version>
+			<version>1.3-aplha1</version>
 		</dependency>
 		<!-- Scope compile third party	-->
 		<!-- Scope provided		-->
