@@ -1,0 +1,111 @@
+<?xml version="1.0"?>
+<!--
+  - Author:  Nathan A. Good <mail@nathanagood.com>
+  -->
+<project name="docbook-src" default="build-pdf">
+	
+	<taskdef name="fop" 
+	         classname="org.apache.fop.tools.anttasks.Fop">
+	  <classpath>
+	    <fileset dir="lib">
+	      <include name="*.jar"/>
+	    </fileset>
+	  </classpath>
+	</taskdef>
+
+    
+    <description>
+            This Ant build.xml file is used to transform DocBook XML to various
+    </description>
+
+    <!--
+      - Configure basic properties that will be used in the file.
+      -->
+    <property name="doc.dir" value="doc" />
+
+	<property name="docbook.schema" value="docbook"/>
+	<property name="docbook.xsl" value="docbook-xsl"/>
+
+	<available file="${docbook.schema}" type="dir" property="docbook.schema.exists"/>
+	<available file="${docbook.xsl}" type="dir" property="docbook.xsl.exists"/>
+
+	<property name="docbook.xsl.dir" value="${docbook.xsl}/docbook-xsl-1.75.2" />
+    <property name="docbook.html.stylesheet" value="${docbook.xsl.dir}/html/docbook.xsl" />
+    <property name="docbook.fo.stylesheet" value="${docbook.xsl.dir}/fo/docbook.xsl" />
+
+    <!--
+      - Sets up the classpath for the Xalan and Xerces implementations
+      - that are to be used in this script, since the versions that ship
+      - with Ant may be out of date.
+      -->
+    <path id="xalan.classpath">
+        <fileset dir="lib" id="xalan.fileset">
+            <include name="*.jar" />
+        </fileset>
+    </path>
+
+    <!--
+      - target:  usage
+      -->
+    <target name="usage" description="Prints the Ant build.xml usage">
+        <echo message="Use -projecthelp to get a list of the available targets." />
+    </target>
+
+	<target name="setup-docbook" unless="docbook.schema.exists">
+		<echo>Unzipping docbook schemas...</echo>
+		<unzip src="docbook-5.0.zip" dest="${docbook.schema}"/>
+	</target>
+
+	<target name="setup-docbook-xsl" unless="docbook.xsl.exists">
+		<echo>Unzipping docbook xsl stylesheets...</echo>
+		<unzip src="docbook-xsl-1.75.2.zip" dest="${docbook.xsl}"/>
+	</target>
+
+    <!--
+      - target:  clean
+      -->
+    <target name="clean" description="Cleans up generated files.">
+        <delete dir="${doc.dir}" />
+    </target>
+
+    <!--
+      - target:  depends
+      -->
+    <target name="depends" depends="setup-docbook,setup-docbook-xsl">
+        <mkdir dir="${doc.dir}" />
+    </target>
+
+    <!--
+      - target:  build-html
+      - description:  Iterates through a directory and transforms
+      -     .xml files into .html files using the DocBook XSL.
+      -->
+    <target name="build-html" depends="depends" 
+        description="Generates HTML files from DocBook XML">
+        <xslt style="${svg-open.html.stylesheet}" extension=".html" 
+            basedir="src" destdir="${doc.dir}" includes="*.xml">
+            <classpath refid="xalan.classpath" />
+        </xslt>
+		<copy todir="doc/images/">
+			<fileset dir="src/images"/>
+		</copy>
+    </target>
+	
+    <target name="build-fo" depends="depends" 
+        description="Generates HTML files from DocBook XML">
+        <xslt style="${docbook.fo.stylesheet}" extension=".fo" 
+            basedir="src" destdir="${doc.dir}" includes="*.xml">
+            <classpath refid="xalan.classpath" />
+        </xslt>
+		<copy todir="doc/images/">
+			<fileset dir="src/images"/>
+		</copy>
+    </target>
+	
+    <target name="build-pdf" depends="build-fo" 
+        description="Generates HTML files from DocBook XML">
+    	<fop outdir="${doc.dir}" outfile="paper.pdf"
+			fofile="${doc.dir}/paper.fo" force="true"></fop>
+    </target>
+
+</project>

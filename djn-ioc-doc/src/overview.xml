@@ -1,0 +1,17 @@
+<section xml:id="overview_section" xmlns="http://docbook.org/ns/docbook" 
+	xmlns:xlink="http://www.w3.org/1999/xlink" 
+	xmlns:xml="http://www.w3.org/XML/1998/namespace" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://docbook.org/ns/docbook ../lib/docbook/docbook-5.0/xsd/docbook.xsd ">
+	
+	<title>
+		Title
+	</title>
+	<para>
+		First Paragraph
+	</para>
+	<para>
+		Second Paragraph
+	</para>
+</section>
+

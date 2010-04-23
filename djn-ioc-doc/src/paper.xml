@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<!DOCTYPE book [
+<!ENTITY overview SYSTEM "overview.xml">
+]>
+
+<article xmlns="http://docbook.org/ns/docbook" 
+	xmlns:xlink="http://www.w3.org/1999/xlink" 
+	xmlns:xml="http://www.w3.org/XML/1998/namespace" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://docbook.org/ns/docbook ../lib/docbook/docbook-5.0/xsd/docbook.xsd ">
+
+<info>
+<title>Article Title</title> 
+
+<author>
+	<personname>
+		<firstname>First Name</firstname>
+		<surname>Last Name</surname>
+	</personname>
+	<email>Email</email>
+	<affiliation>
+		<org>
+	                    <orgname>Organization Name</orgname>
+	                    <orgdiv>Organization Division</orgdiv>
+	                    <address>
+	                        <city>City</city>
+	                        <state>State</state>
+	                        <street>Street</street>
+	                        <country>Country</country>
+	                    </address>   	
+		</org>
+	</affiliation>
+</author>
+
+<abstract>
+<para>
+	Abstract Content
+</para>
+</abstract>
+
+</info>
+
+&overview;
+
+</article>
